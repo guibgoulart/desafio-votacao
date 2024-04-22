@@ -50,4 +50,22 @@ public class SessaoVotacaoServiceTest {
         assertEquals(Duration.ofMinutes(1), result.getDuracao());
         verify(sessaoVotacaoRepository).save(any(SessaoVotacao.class));
     }
+
+    @Test
+    void shouldOpenVotingSessionWithCustomDuration() {
+        Pauta pauta = new Pauta();
+        pauta.setId(1L);
+        pauta.setTitulo("Pauta 1");
+        pauta.setDetalhes("Detalhes pauta 1");
+        Mockito.when(pautaRepository.findById(1L)).thenReturn(Optional.of(pauta));
+
+        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, Duration.ofMinutes(10));
+        Mockito.when(sessaoVotacaoRepository.save(any(SessaoVotacao.class))).thenReturn(sessaoVotacao);
+
+        SessaoVotacao result = sessaoVotacaoService.abrirSessao(1L, Duration.ofMinutes(10));
+
+        assertNotNull(result);
+        assertEquals(Duration.ofMinutes(10), result.getDuracao());
+        verify(sessaoVotacaoRepository).save(any(SessaoVotacao.class));
+    }
 }
