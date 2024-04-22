@@ -22,4 +22,8 @@ public class PautaService {
             throw new Exception("Erro ao criar pauta", e);
         }
     }
+
+    public Pauta getPautaById(long pautaId) {
+        return null;
+    }
 }

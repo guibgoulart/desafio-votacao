@@ -2,25 +2,28 @@ package cooperativa.votacao.service;
 
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.repository.PautaRepository;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class PautaServiceTest {
 
-    @Autowired
+    @InjectMocks
     private PautaService pautaService;
 
     @MockBean
@@ -32,6 +35,8 @@ public class PautaServiceTest {
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
+
+        MockitoAnnotations.initMocks(this);
     }
     @Test
     void shouldCreatePautaSuccesfully() throws Exception {
@@ -90,5 +95,22 @@ public class PautaServiceTest {
         // Act and Assert
         Exception exception = assertThrows(Exception.class, () -> pautaService.createPauta(pauta));
         assertEquals("Erro ao criar pauta", exception.getMessage());
+    }
+
+    @Test
+    public void shouldReturnPautaWhenPautaExists() {
+        Pauta pauta = new Pauta();
+        when(pautaRepository.findById(1L)).thenReturn(Optional.of(pauta));
+
+        Pauta result = pautaService.getPauta(1L);
+
+        assertEquals(pauta, result);
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenPautaDoesNotExist() {
+        when(pautaRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> pautaService.getPauta(1L));
     }
 }
