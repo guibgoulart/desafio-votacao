@@ -42,6 +42,7 @@ public class SessaoVotacaoService {
                 log.info("Fechando sessão de votação para pauta: {}", pautaId);
                 savedSessaoVotacao.setStatus(StatusVotacao.FECHADA);
                 sessaoVotacaoRepository.save(savedSessaoVotacao);
+                log.info("Sessão de votação fechada para pauta: {}", pautaId);
             }, duracao.toMinutes(), TimeUnit.MINUTES);
 
             // verificar se teve sucesso e logar informaçoes
@@ -49,7 +50,7 @@ public class SessaoVotacaoService {
                 log.error("Falha ao salvar a sessão de votação para a pauta: {}", pautaId);
                 throw new RuntimeException("Falha ao salvar a sessão de votação");
             } else {
-                log.info("Sessão de votação {} foi aberta com sucesso", savedSessaoVotacao);
+                log.info("Sessão de votação {} foi aberta com sucesso", savedSessaoVotacao.toString());
             }
             return savedSessaoVotacao;
         } catch (Exception e) {
