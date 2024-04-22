@@ -51,7 +51,7 @@ public class PautaServiceTest {
     }
 
     @Test
-    void shouldFailWhenCreatePautaWithoutTitle() {
+    void shouldFailWhenCreatePautaWithoutTitulo() {
         // Arrange
         Pauta pauta = new Pauta();
         pauta.setDetalhes("Detalhes pauta 1");
@@ -62,5 +62,19 @@ public class PautaServiceTest {
         // Assert
         assertFalse(violations.isEmpty());
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("titulo")));
+    }
+
+    @Test
+    void shouldFailWhenCreatePautaWithoutDetalhes() {
+        // Arrange
+        Pauta pauta = new Pauta();
+        pauta.setTitulo("Pauta 1");
+
+        // Act
+        var violations = validator.validate(pauta);
+
+        // Assert
+        assertFalse(violations.isEmpty());
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("detalhes")));
     }
 }
