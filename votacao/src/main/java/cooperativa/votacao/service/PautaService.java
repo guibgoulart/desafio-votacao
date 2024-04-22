@@ -14,9 +14,11 @@ public class PautaService {
     private PautaRepository pautaRepository;
 
     public Pauta createPauta(Pauta pauta) throws Exception {
-        log.info("Criando pauta: {}", pauta);
+        log.info("Criando pauta: {}", pauta.toString());
         try {
-            return pautaRepository.save(pauta);
+            Pauta novaPauta = pautaRepository.save(pauta);
+            log.info("Pauta criada com sucesso: {}", novaPauta.toString());
+            return novaPauta;
         } catch (Exception e) {
             log.error("Erro ao criar pauta: {}", e.getMessage());
             throw new Exception("Erro ao criar pauta", e);
