@@ -3,6 +3,9 @@ package cooperativa.votacao.service;
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.repository.PautaRepository;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,9 +25,12 @@ public class PautaServiceTest {
     @MockBean
     private PautaRepository pautaRepository;
 
+    private Validator validator;
+
     @BeforeEach
     void setUp() {
-
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
     @Test
     void shouldCreatePautaSuccesfully() {
@@ -50,7 +56,11 @@ public class PautaServiceTest {
         Pauta pauta = new Pauta();
         pauta.setDetalhes("Detalhes pauta 1");
 
-        //Act and Assert
-        assertThrows(ConstraintViolationException.class, () -> pautaService.createPauta(pauta));
+        // Act
+        var violations = validator.validate(pauta);
+
+        // Assert
+        assertFalse(violations.isEmpty());
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("titulo")));
     }
 }

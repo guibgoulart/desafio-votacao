@@ -16,6 +16,7 @@ public class Pauta {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotBlank
     private String titulo;
 
     private String detalhes;
