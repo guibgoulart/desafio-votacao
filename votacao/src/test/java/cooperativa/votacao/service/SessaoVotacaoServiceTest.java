@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -36,12 +37,17 @@ public class SessaoVotacaoServiceTest {
     void shouldOpenVotingSessionWithDefaultDuration() {
         Pauta pauta = new Pauta();
         pauta.setId(1L);
+        pauta.setTitulo("Pauta 1");
+        pauta.setDetalhes("Detalhes pauta 1");
         Mockito.when(pautaRepository.findById(1L)).thenReturn(Optional.of(pauta));
 
-        SessaoVotacao sessaoVotacao = sessaoVotacaoService.abrirSessao(1L, null);
+        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, null);
+        Mockito.when(sessaoVotacaoRepository.save(any(SessaoVotacao.class))).thenReturn(sessaoVotacao);
 
-        assertNotNull(sessaoVotacao);
-        assertEquals(Duration.ofMinutes(1), sessaoVotacao.getDuracao());
-        verify(sessaoVotacaoRepository).save(sessaoVotacao);
+        SessaoVotacao result = sessaoVotacaoService.abrirSessao(1L, null);
+
+        assertNotNull(result);
+        assertEquals(Duration.ofMinutes(1), result.getDuracao());
+        verify(sessaoVotacaoRepository).save(any(SessaoVotacao.class));
     }
 }
