@@ -45,6 +45,9 @@ public class SessaoVotacaoService {
     }
 
     public SessaoVotacao findActiveByPautaId(long pautaId) {
-        return sessaoVotacaoRepository.findById(pautaId).filter(sv -> sv.getStatus() == StatusVotacao.ABERTA).orElse(null);
+        return sessaoVotacaoRepository.findById(pautaId).filter(sv -> sv.getStatus() == StatusVotacao.ABERTA).orElseThrow(() -> {
+            log.error("Sessão de votação não encontrada ou não está aberta para a pauta: {}", pautaId);
+            return new RuntimeException("Sessão de votação não encontrada ou não está aberta");
+        });
     }
 }
