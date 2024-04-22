@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.config.name=application-test"})
 public class VotoServiceTest {
     @InjectMocks
     private VotoService votoService;

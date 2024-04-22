@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.config.name=application-test"})
 public class SessaoVotacaoServiceTest {
     @Autowired
     private SessaoVotacaoService sessaoVotacaoService;
