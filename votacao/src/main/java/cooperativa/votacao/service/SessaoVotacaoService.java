@@ -60,6 +60,6 @@ public class SessaoVotacaoService {
     }
 
     public SessaoVotacao findActiveByPautaId(long pautaId) {
-        return sessaoVotacaoRepository.findById(pautaId).orElse(null);
+        return sessaoVotacaoRepository.findById(pautaId).filter(sv -> sv.getStatus() == StatusVotacao.ABERTA).orElse(null);
     }
 }

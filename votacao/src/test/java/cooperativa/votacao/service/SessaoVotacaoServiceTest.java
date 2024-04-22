@@ -47,10 +47,10 @@ public class SessaoVotacaoServiceTest {
         pauta.setDetalhes("Detalhes pauta 1");
         Mockito.when(pautaRepository.findById(1L)).thenReturn(Optional.of(pauta));
 
-        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, null);
+        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, Duration.ofMinutes(1));
         Mockito.when(sessaoVotacaoRepository.save(any(SessaoVotacao.class))).thenReturn(sessaoVotacao);
 
-        SessaoVotacao result = sessaoVotacaoService.abrirSessao(1L, null);
+        SessaoVotacao result = sessaoVotacaoService.abrirSessao(1L, Duration.ofMinutes(1));
 
         assertNotNull(result);
         assertEquals(Duration.ofMinutes(1), result.getDuracao());
