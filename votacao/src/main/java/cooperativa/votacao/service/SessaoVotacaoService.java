@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
@@ -21,6 +24,8 @@ public class SessaoVotacaoService {
 
     @Autowired
     PautaService pautaService;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public SessaoVotacao abrirSessao(long pautaId, Duration duracao) {
         try {
@@ -34,6 +39,11 @@ public class SessaoVotacaoService {
             }
 
             SessaoVotacao savedSessaoVotacao = sessaoVotacaoRepository.save(sessaoVotacao);
+
+            scheduler.schedule(() -> {
+                savedSessaoVotacao.setStatus(StatusVotacao.FECHADA);
+                sessaoVotacaoRepository.save(savedSessaoVotacao);
+            }, duracao.toMinutes(), TimeUnit.MINUTES);
 
             // verificar se teve sucesso e logar informaçoes
             if (savedSessaoVotacao == null) {
@@ -50,9 +60,6 @@ public class SessaoVotacaoService {
     }
 
     public SessaoVotacao findActiveByPautaId(long pautaId) {
-        return sessaoVotacaoRepository.findById(pautaId).filter(sv -> sv.getStatus() == StatusVotacao.ABERTA).orElseThrow(() -> {
-            log.error("Sessão de votação não encontrada ou não está aberta para a pauta: {}", pautaId);
-            return new RuntimeException("Sessão de votação não encontrada ou não está aberta");
-        });
+        return sessaoVotacaoRepository.findById(pautaId).orElse(null);
     }
 }
