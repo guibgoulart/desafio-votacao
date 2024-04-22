@@ -14,7 +14,7 @@ public class PautaService {
     private PautaRepository pautaRepository;
 
     public Pauta createPauta(Pauta pauta) throws Exception {
-        log.trace("Criando pauta: {}", pauta);
+        log.info("Criando pauta: {}", pauta);
         try {
             return pautaRepository.save(pauta);
         } catch (Exception e) {
@@ -24,7 +24,7 @@ public class PautaService {
     }
 
     public Pauta getPautaById(long pautaId) {
-        log.trace("Buscando pauta por id: {}", pautaId);
+        log.info("Buscando pauta por id: {}", pautaId);
         return pautaRepository.findById(pautaId).orElseThrow(() -> {
             log.error("Pauta não encontrada para id: {}", pautaId);
             return new RuntimeException("Pauta não encontrada");

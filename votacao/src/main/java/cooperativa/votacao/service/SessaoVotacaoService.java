@@ -3,14 +3,12 @@ package cooperativa.votacao.service;
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.StatusVotacao;
-import cooperativa.votacao.repository.PautaRepository;
 import cooperativa.votacao.repository.SessaoVotacaoRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +39,7 @@ public class SessaoVotacaoService {
             SessaoVotacao savedSessaoVotacao = sessaoVotacaoRepository.save(sessaoVotacao);
 
             scheduler.schedule(() -> {
+                log.info("Fechando sessão de votação para pauta: {}", pautaId);
                 savedSessaoVotacao.setStatus(StatusVotacao.FECHADA);
                 sessaoVotacaoRepository.save(savedSessaoVotacao);
             }, duracao.toMinutes(), TimeUnit.MINUTES);

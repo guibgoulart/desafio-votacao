@@ -4,12 +4,14 @@ import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.Voto;
 import cooperativa.votacao.repository.VotoRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Log4j2
 public class VotoService {
     @Autowired
     private VotoRepository votoRepository;
@@ -21,16 +23,21 @@ public class VotoService {
     private SessaoVotacaoService sessaoVotacaoService;
 
     public Voto votar(Long pautaId, Long associadoId, Voto.TipoVoto tipoVoto) {
+
+        log.info("Votando na pauta: {}, associado: {}, voto: {}", pautaId, associadoId, tipoVoto);
+
         Pauta pauta = pautaService.getPautaById(pautaId);
 
         SessaoVotacao sessaoVotacao = sessaoVotacaoService.findActiveByPautaId(pautaId);
         if (sessaoVotacao == null) {
+            log.error("Sessão de votação não está ativa");
             throw new IllegalArgumentException("Sessão de votação não está ativa");
         }
 
         // verifica se associado já votou nessa pauta
         Optional<Voto> votoOptional = votoRepository.findById(associadoId);
         if (votoOptional.isPresent() && votoOptional.get().getPauta().getId().equals(pautaId)) {
+            log.error("Associado já votou nessa Pauta");
             throw new IllegalArgumentException("Associado já votou nessa Pauta");
         }
 
