@@ -123,4 +123,12 @@ public class SessaoVotacaoServiceTest {
 
         assertNull(result);
     }
+
+    @Test
+    void shouldThrowExceptionWhenNoActiveSessionExistsForPauta() {
+        long pautaId = 1L;
+        Mockito.when(sessaoVotacaoRepository.findById(pautaId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> sessaoVotacaoService.findActiveByPautaId(pautaId));
+    }
 }
