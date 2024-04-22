@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,4 +48,19 @@ public class VotoService {
         voto.setTipoVoto(tipoVoto);
         return votoRepository.save(voto);
     }
+
+    public ResultadoVotacao getResultadoVotacao(Long pautaId) {
+        log.info("Buscando resultado da votação para pauta: {}", pautaId);
+        List<Voto> votos = votoRepository.findAll().stream().filter(voto -> voto.getPauta().getId().equals(pautaId)).toList();
+
+        long totalSim = votos.stream().filter(voto -> voto.getTipoVoto() == Voto.TipoVoto.SIM).count();
+        long totalNao = votos.stream().filter(voto -> voto.getTipoVoto() == Voto.TipoVoto.NAO).count();
+
+        ResultadoVotacao resultado = new ResultadoVotacao();
+        resultado.setTotalSim(totalSim);
+        resultado.setTotalNao(totalNao);
+
+        return resultado;
+    }
 }
+
