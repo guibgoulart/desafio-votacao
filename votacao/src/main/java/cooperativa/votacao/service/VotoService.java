@@ -4,6 +4,7 @@ import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.Voto;
 import cooperativa.votacao.enums.ResultadoPauta;
+import cooperativa.votacao.enums.TipoVoto;
 import cooperativa.votacao.repository.VotoRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class VotoService {
     @Autowired
     private SessaoVotacaoService sessaoVotacaoService;
 
-    public Voto votar(Long pautaId, Long associadoId, Voto.TipoVoto tipoVoto) {
+    public Voto votar(Long pautaId, Long associadoId, TipoVoto tipoVoto) {
 
         log.info("Votando na pauta: {}, associado: {}, voto: {}", pautaId, associadoId, tipoVoto);
 
@@ -54,8 +55,8 @@ public class VotoService {
         log.info("Buscando resultado da votação para pauta: {}", pautaId);
         List<Voto> votos = votoRepository.findAll().stream().filter(voto -> voto.getPauta().getId().equals(pautaId)).toList();
 
-        long totalSim = votos.stream().filter(voto -> voto.getTipoVoto() == Voto.TipoVoto.SIM).count();
-        long totalNao = votos.stream().filter(voto -> voto.getTipoVoto() == Voto.TipoVoto.NAO).count();
+        long totalSim = votos.stream().filter(voto -> voto.getTipoVoto() == TipoVoto.SIM).count();
+        long totalNao = votos.stream().filter(voto -> voto.getTipoVoto() == TipoVoto.NAO).count();
 
         ResultadoVotacao resultado = new ResultadoVotacao();
         resultado.setTotalSim(totalSim);

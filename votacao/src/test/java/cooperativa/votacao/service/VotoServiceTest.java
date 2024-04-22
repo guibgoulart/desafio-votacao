@@ -4,6 +4,7 @@ import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.Voto;
 import cooperativa.votacao.enums.ResultadoPauta;
+import cooperativa.votacao.enums.TipoVoto;
 import cooperativa.votacao.repository.VotoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ public class VotoServiceTest {
         when(pautaService.getPautaById(anyLong())).thenThrow(new RuntimeException("Pauta não encontrada"));
 
         assertThrows(RuntimeException.class, () -> {
-            votoService.votar(1L, 1L, Voto.TipoVoto.SIM);
+            votoService.votar(1L, 1L, TipoVoto.SIM);
         });
     }
 
@@ -54,7 +55,7 @@ public class VotoServiceTest {
         when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            votoService.votar(1L, 1L, Voto.TipoVoto.SIM);
+            votoService.votar(1L, 1L, TipoVoto.SIM);
         });
     }
 
@@ -70,7 +71,7 @@ public class VotoServiceTest {
         when(votoRepository.findById(anyLong())).thenReturn(Optional.of(voto));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            votoService.votar(1L, 1L, Voto.TipoVoto.SIM);
+            votoService.votar(1L, 1L, TipoVoto.SIM);
         });
     }
 
@@ -81,7 +82,7 @@ public class VotoServiceTest {
         when(votoRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(votoRepository.save(any(Voto.class))).thenReturn(new Voto());
 
-        Voto voto = votoService.votar(1L, 1L, Voto.TipoVoto.SIM);
+        Voto voto = votoService.votar(1L, 1L, TipoVoto.SIM);
 
         assertNotNull(voto);
     }
@@ -93,11 +94,11 @@ public class VotoServiceTest {
 
         Voto votoSim = new Voto();
         votoSim.setPauta(pauta);
-        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+        votoSim.setTipoVoto(TipoVoto.SIM);
 
         Voto votoNao = new Voto();
         votoNao.setPauta(pauta);
-        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+        votoNao.setTipoVoto(TipoVoto.NAO);
 
         when(votoRepository.findAll()
                 .stream().filter(voto -> voto.getPauta().getId().equals(anyLong())).toList())
@@ -125,11 +126,11 @@ public class VotoServiceTest {
 
         Voto votoSim = new Voto();
         votoSim.setPauta(pauta);
-        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+        votoSim.setTipoVoto(TipoVoto.SIM);
 
         Voto votoNao = new Voto();
         votoNao.setPauta(pauta);
-        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+        votoNao.setTipoVoto(TipoVoto.NAO);
 
         when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
         when(votoRepository.findAll()
@@ -146,11 +147,11 @@ public class VotoServiceTest {
 
         Voto votoSim = new Voto();
         votoSim.setPauta(pauta);
-        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+        votoSim.setTipoVoto(TipoVoto.SIM);
 
         Voto votoNao = new Voto();
         votoNao.setPauta(pauta);
-        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+        votoNao.setTipoVoto(TipoVoto.NAO);
 
         when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
         when(votoRepository.findAll()
@@ -167,11 +168,11 @@ public class VotoServiceTest {
 
         Voto votoSim = new Voto();
         votoSim.setPauta(pauta);
-        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+        votoSim.setTipoVoto(TipoVoto.SIM);
 
         Voto votoNao = new Voto();
         votoNao.setPauta(pauta);
-        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+        votoNao.setTipoVoto(TipoVoto.NAO);
 
         when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
         when(votoRepository.findAll()

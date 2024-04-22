@@ -1,5 +1,6 @@
 package cooperativa.votacao.entity;
 
+import cooperativa.votacao.enums.TipoVoto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,4 @@ public class Voto {
 
     @Enumerated(EnumType.STRING)
     private TipoVoto tipoVoto;
-
-    public enum TipoVoto {
-        SIM, NAO
-    }
 }
