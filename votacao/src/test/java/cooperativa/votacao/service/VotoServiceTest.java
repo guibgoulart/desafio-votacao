@@ -11,10 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -83,5 +83,28 @@ public class VotoServiceTest {
         Voto voto = votoService.votar(1L, 1L, Voto.TipoVoto.SIM);
 
         assertNotNull(voto);
+    }
+
+    @Test
+    public void testGetResultadoVotacao() {
+        Pauta pauta = new Pauta();
+        pauta.setId(1L);
+
+        Voto votoSim = new Voto();
+        votoSim.setPauta(pauta);
+        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+
+        Voto votoNao = new Voto();
+        votoNao.setPauta(pauta);
+        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+
+        when(votoRepository.findAll()
+                .stream().filter(voto -> voto.getPauta().getId().equals(anyLong())).toList())
+                .thenReturn(Arrays.asList(votoSim, votoNao));
+
+        ResultadoVotacao resultado = votoService.getResultadoVotacao(1L);
+
+        assertEquals(1, resultado.getTotalSim());
+        assertEquals(1, resultado.getTotalNao());
     }
 }
