@@ -2,7 +2,7 @@ package cooperativa.votacao.service;
 
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
-import cooperativa.votacao.entity.StatusVotacao;
+import cooperativa.votacao.enums.StatusVotacao;
 import cooperativa.votacao.repository.SessaoVotacaoRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

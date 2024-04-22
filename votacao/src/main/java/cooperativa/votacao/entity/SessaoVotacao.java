@@ -1,5 +1,6 @@
 package cooperativa.votacao.entity;
 
+import cooperativa.votacao.enums.StatusVotacao;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

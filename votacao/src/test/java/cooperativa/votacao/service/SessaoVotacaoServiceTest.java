@@ -2,7 +2,7 @@ package cooperativa.votacao.service;
 
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
-import cooperativa.votacao.entity.StatusVotacao;
+import cooperativa.votacao.enums.StatusVotacao;
 import cooperativa.votacao.repository.PautaRepository;
 import cooperativa.votacao.repository.SessaoVotacaoRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package cooperativa.votacao.entity;
+package cooperativa.votacao.enums;
 
 public enum StatusVotacao {
     ABERTA, FECHADA
