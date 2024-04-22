@@ -3,6 +3,7 @@ package cooperativa.votacao.service;
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.Voto;
+import cooperativa.votacao.enums.ResultadoPauta;
 import cooperativa.votacao.repository.VotoRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,24 @@ public class VotoService {
         resultado.setTotalNao(totalNao);
 
         return resultado;
+    }
+
+    public ResultadoPauta resultadoPauta(Long pautaId) {
+        log.info("Verificando se pauta {} foi aprovada...", pautaId);
+        ResultadoVotacao resultado = getResultadoVotacao(pautaId);
+
+        if(sessaoVotacaoService.findActiveByPautaId(pautaId) != null) {
+            log.error("Sessão de votação ainda está ativa");
+            throw new IllegalArgumentException("Sessão de votação ainda está ativa");
+        }
+
+        if (resultado.getTotalSim() > resultado.getTotalNao()) {
+            return ResultadoPauta.APROVADA;
+        } else if (resultado.getTotalSim() < resultado.getTotalNao()) {
+            return ResultadoPauta.REJEITADA;
+        } else {
+            return ResultadoPauta.EMPATE;
+        }
     }
 }
 

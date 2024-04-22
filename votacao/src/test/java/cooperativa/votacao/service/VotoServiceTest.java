@@ -3,6 +3,7 @@ package cooperativa.votacao.service;
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.Voto;
+import cooperativa.votacao.enums.ResultadoPauta;
 import cooperativa.votacao.repository.VotoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,5 +107,77 @@ public class VotoServiceTest {
 
         assertEquals(1, resultado.getTotalSim());
         assertEquals(1, resultado.getTotalNao());
+    }
+
+    @Test
+    public void testResultadoPautaVotacaoAtiva() {
+        when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(new SessaoVotacao());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            votoService.resultadoPauta(1L);
+        });
+    }
+
+    @Test
+    public void testResultadoPautaAprovada() {
+        Pauta pauta = new Pauta();
+        pauta.setId(1L);
+
+        Voto votoSim = new Voto();
+        votoSim.setPauta(pauta);
+        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+
+        Voto votoNao = new Voto();
+        votoNao.setPauta(pauta);
+        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+
+        when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
+        when(votoRepository.findAll()
+                .stream().filter(voto -> voto.getPauta().getId().equals(anyLong())).toList())
+                .thenReturn(Arrays.asList(votoSim, votoSim, votoNao));
+
+        assertEquals(ResultadoPauta.APROVADA, votoService.resultadoPauta(1L));
+    }
+
+    @Test
+    public void testResultadoPautaRejeitada() {
+        Pauta pauta = new Pauta();
+        pauta.setId(1L);
+
+        Voto votoSim = new Voto();
+        votoSim.setPauta(pauta);
+        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+
+        Voto votoNao = new Voto();
+        votoNao.setPauta(pauta);
+        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+
+        when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
+        when(votoRepository.findAll()
+                .stream().filter(voto -> voto.getPauta().getId().equals(anyLong())).toList())
+                .thenReturn(Arrays.asList(votoSim, votoNao, votoNao));
+
+        assertEquals(ResultadoPauta.REJEITADA, votoService.resultadoPauta(1L));
+    }
+
+    @Test
+    public void testResultadoPautaEmpate() {
+        Pauta pauta = new Pauta();
+        pauta.setId(1L);
+
+        Voto votoSim = new Voto();
+        votoSim.setPauta(pauta);
+        votoSim.setTipoVoto(Voto.TipoVoto.SIM);
+
+        Voto votoNao = new Voto();
+        votoNao.setPauta(pauta);
+        votoNao.setTipoVoto(Voto.TipoVoto.NAO);
+
+        when(sessaoVotacaoService.findActiveByPautaId(anyLong())).thenReturn(null);
+        when(votoRepository.findAll()
+                .stream().filter(voto -> voto.getPauta().getId().equals(anyLong())).toList())
+                .thenReturn(Arrays.asList(votoSim, votoNao));
+
+        assertEquals(ResultadoPauta.EMPATE, votoService.resultadoPauta(1L));
     }
 }
