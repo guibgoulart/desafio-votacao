@@ -78,4 +78,15 @@ public class SessaoVotacaoServiceTest {
 
         assertThrows(RuntimeException.class, () -> sessaoVotacaoService.abrirSessao(1L, Duration.ofMinutes(1)));
     }
+
+    @Test
+    void shouldThrowExceptionWhenSaveFails() {
+        Pauta pauta = new Pauta();
+        pauta.setId(1L);
+        Mockito.when(pautaService.getPautaById(1L)).thenReturn(pauta);
+
+        Mockito.when(sessaoVotacaoRepository.save(any(SessaoVotacao.class))).thenReturn(null);
+
+        assertThrows(RuntimeException.class, () -> sessaoVotacaoService.abrirSessao(1L, Duration.ofMinutes(1)));
+    }
 }
