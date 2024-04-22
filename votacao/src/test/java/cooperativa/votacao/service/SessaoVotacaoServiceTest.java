@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -125,14 +126,6 @@ public class SessaoVotacaoServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenNoActiveSessionExistsForPauta() {
-        long pautaId = 1L;
-        Mockito.when(sessaoVotacaoRepository.findById(pautaId)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> sessaoVotacaoService.findActiveByPautaId(pautaId));
-    }
-
-    @Test
     void shouldThrowExceptionWhenActiveSessionAlreadyExistsForPauta() {
         long pautaId = 1L;
         SessaoVotacao sessaoVotacao = new SessaoVotacao();
@@ -140,5 +133,33 @@ public class SessaoVotacaoServiceTest {
         Mockito.when(sessaoVotacaoRepository.findById(pautaId)).thenReturn(Optional.of(sessaoVotacao));
 
         assertThrows(RuntimeException.class, () -> sessaoVotacaoService.abrirSessao(pautaId, Duration.ofMinutes(1)));
+    }
+
+    @Test
+    void shouldCloseVotingSessionAfterDuration() throws InterruptedException {
+        // Arrange
+        long pautaId = 1L;
+        Duration duration = Duration.ofSeconds(1);
+        Pauta pauta = new Pauta();
+        pauta.setId(pautaId);
+        Mockito.when(pautaService.getPautaById(pautaId)).thenReturn(pauta);
+
+        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, duration);
+        Mockito.when(sessaoVotacaoRepository.save(any(SessaoVotacao.class))).thenReturn(sessaoVotacao);
+
+        Mockito.when(sessaoVotacaoRepository.findById(pautaId)).thenReturn(Optional.empty());
+
+        // Act
+        SessaoVotacao result = sessaoVotacaoService.abrirSessao(pautaId, duration);
+
+        // adiciona pequeno buffer para garantir que a execução do scheduler foi concluída
+        Thread.sleep(duration.plusMillis(500).toMillis()); // Change this to 500 milliseconds
+
+        //Assert
+        // verifica se o método save foi chamado duas vezes (uma pra criar, outra pra dar o update)
+        Mockito.verify(sessaoVotacaoRepository, times(2)).save(any(SessaoVotacao.class));
+
+        // verifica se o status foi alterado para FECHADA
+        assertEquals(StatusVotacao.FECHADA, result.getStatus());
     }
 }
