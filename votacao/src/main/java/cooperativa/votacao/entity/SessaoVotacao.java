@@ -36,7 +36,3 @@ public class SessaoVotacao {
         this.status = StatusVotacao.ABERTA;
     }
 }
-
-enum StatusVotacao {
-    ABERTA, FECHADA
-}

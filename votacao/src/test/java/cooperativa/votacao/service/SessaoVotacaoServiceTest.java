@@ -2,6 +2,7 @@ package cooperativa.votacao.service;
 
 import cooperativa.votacao.entity.Pauta;
 import cooperativa.votacao.entity.SessaoVotacao;
+import cooperativa.votacao.entity.StatusVotacao;
 import cooperativa.votacao.repository.PautaRepository;
 import cooperativa.votacao.repository.SessaoVotacaoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -88,5 +90,37 @@ public class SessaoVotacaoServiceTest {
         Mockito.when(sessaoVotacaoRepository.save(any(SessaoVotacao.class))).thenReturn(null);
 
         assertThrows(RuntimeException.class, () -> sessaoVotacaoService.abrirSessao(1L, Duration.ofMinutes(1)));
+    }
+
+    @Test
+    void shouldReturnActiveSessionWhenExists() {
+        SessaoVotacao sessaoVotacao = new SessaoVotacao();
+        sessaoVotacao.setStatus(StatusVotacao.ABERTA);
+        Mockito.when(sessaoVotacaoRepository.findById(anyLong())).thenReturn(Optional.of(sessaoVotacao));
+
+        SessaoVotacao result = sessaoVotacaoService.findActiveByPautaId(1L);
+
+        assertNotNull(result);
+        assertEquals(StatusVotacao.ABERTA, result.getStatus());
+    }
+
+    @Test
+    void shouldReturnNullWhenNoActiveSessionExists() {
+        SessaoVotacao sessaoVotacao = new SessaoVotacao();
+        sessaoVotacao.setStatus(StatusVotacao.FECHADA);
+        Mockito.when(sessaoVotacaoRepository.findById(anyLong())).thenReturn(Optional.of(sessaoVotacao));
+
+        SessaoVotacao result = sessaoVotacaoService.findActiveByPautaId(1L);
+
+        assertNull(result);
+    }
+
+    @Test
+    void shouldReturnNullWhenNoSessionExists() {
+        Mockito.when(sessaoVotacaoRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        SessaoVotacao result = sessaoVotacaoService.findActiveByPautaId(1L);
+
+        assertNull(result);
     }
 }
