@@ -29,6 +29,9 @@ public class SessaoVotacaoServiceTest {
     @MockBean
     private PautaRepository pautaRepository;
 
+    @MockBean
+    private PautaService pautaService;
+
     @BeforeEach
     void setUp() {
     }
@@ -67,5 +70,12 @@ public class SessaoVotacaoServiceTest {
         assertNotNull(result);
         assertEquals(Duration.ofMinutes(10), result.getDuracao());
         verify(sessaoVotacaoRepository).save(any(SessaoVotacao.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPautaNotFound() {
+        Mockito.when(pautaService.getPautaById(1L)).thenThrow(new RuntimeException("Pauta não encontrada"));
+
+        assertThrows(RuntimeException.class, () -> sessaoVotacaoService.abrirSessao(1L, Duration.ofMinutes(1)));
     }
 }
