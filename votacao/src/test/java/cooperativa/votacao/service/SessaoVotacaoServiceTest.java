@@ -131,4 +131,14 @@ public class SessaoVotacaoServiceTest {
 
         assertThrows(RuntimeException.class, () -> sessaoVotacaoService.findActiveByPautaId(pautaId));
     }
+
+    @Test
+    void shouldThrowExceptionWhenActiveSessionAlreadyExistsForPauta() {
+        long pautaId = 1L;
+        SessaoVotacao sessaoVotacao = new SessaoVotacao();
+        sessaoVotacao.setStatus(StatusVotacao.ABERTA);
+        Mockito.when(sessaoVotacaoRepository.findById(pautaId)).thenReturn(Optional.of(sessaoVotacao));
+
+        assertThrows(RuntimeException.class, () -> sessaoVotacaoService.abrirSessao(pautaId, Duration.ofMinutes(1)));
+    }
 }
