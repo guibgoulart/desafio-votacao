@@ -1,4 +1,4 @@
-package cooperativa.votacao.service;
+package cooperativa.votacao.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

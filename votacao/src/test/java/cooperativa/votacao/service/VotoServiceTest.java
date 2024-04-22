@@ -1,6 +1,7 @@
 package cooperativa.votacao.service;
 
 import cooperativa.votacao.entity.Pauta;
+import cooperativa.votacao.entity.ResultadoVotacao;
 import cooperativa.votacao.entity.SessaoVotacao;
 import cooperativa.votacao.entity.Voto;
 import cooperativa.votacao.enums.ResultadoPauta;

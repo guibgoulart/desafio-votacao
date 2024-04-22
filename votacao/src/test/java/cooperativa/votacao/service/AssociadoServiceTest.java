@@ -2,8 +2,8 @@ package cooperativa.votacao.service;
 
 import cooperativa.votacao.entity.Associado;
 import cooperativa.votacao.repository.AssociadoRepository;
-import cooperativa.votacao.service.AssociadoService;
 import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
