@@ -24,6 +24,10 @@ public class PautaService {
     }
 
     public Pauta getPautaById(long pautaId) {
-        return null;
+        log.trace("Buscando pauta por id: {}", pautaId);
+        return pautaRepository.findById(pautaId).orElseThrow(() -> {
+            log.error("Pauta não encontrada para id: {}", pautaId);
+            return new RuntimeException("Pauta não encontrada");
+        });
     }
 }

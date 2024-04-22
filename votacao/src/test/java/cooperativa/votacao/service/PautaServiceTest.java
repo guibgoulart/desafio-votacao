@@ -36,7 +36,7 @@ public class PautaServiceTest {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
 
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
     @Test
     void shouldCreatePautaSuccesfully() throws Exception {
@@ -102,7 +102,7 @@ public class PautaServiceTest {
         Pauta pauta = new Pauta();
         when(pautaRepository.findById(1L)).thenReturn(Optional.of(pauta));
 
-        Pauta result = pautaService.getPauta(1L);
+        Pauta result = pautaService.getPautaById(1L);
 
         assertEquals(pauta, result);
     }
@@ -111,6 +111,6 @@ public class PautaServiceTest {
     public void shouldThrowExceptionWhenPautaDoesNotExist() {
         when(pautaRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> pautaService.getPauta(1L));
+        assertThrows(RuntimeException.class, () -> pautaService.getPautaById(1L));
     }
 }
