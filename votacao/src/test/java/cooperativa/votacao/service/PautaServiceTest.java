@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -33,7 +34,7 @@ public class PautaServiceTest {
         validator = factory.getValidator();
     }
     @Test
-    void shouldCreatePautaSuccesfully() {
+    void shouldCreatePautaSuccesfully() throws Exception {
         // Arrange
         Pauta pauta = new Pauta();
         pauta.setTitulo("Pauta 1");
@@ -76,5 +77,18 @@ public class PautaServiceTest {
         // Assert
         assertFalse(violations.isEmpty());
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("detalhes")));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCreatePautaFails() {
+        // Arrange
+        Pauta pauta = new Pauta();
+        pauta.setTitulo("Pauta 1");
+        pauta.setDetalhes("Detalhes pauta 1");
+        doThrow(new RuntimeException("Erro ao salvar pauta")).when(pautaRepository).save(pauta);
+
+        // Act and Assert
+        Exception exception = assertThrows(Exception.class, () -> pautaService.createPauta(pauta));
+        assertEquals("Erro ao criar pauta", exception.getMessage());
     }
 }

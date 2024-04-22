@@ -19,5 +19,6 @@ public class Pauta {
     @NotBlank
     private String titulo;
 
+    @NotBlank
     private String detalhes;
 }
