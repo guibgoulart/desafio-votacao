@@ -28,6 +28,11 @@ public class SessaoVotacaoService {
             Pauta pauta = pautaService.getPautaById(pautaId);
             SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, duracao);
 
+            if(findActiveByPautaId(pautaId) != null) {
+                log.error("Já existe uma sessão de votação aberta para a pauta: {}", pautaId);
+                throw new RuntimeException("Já existe uma sessão de votação aberta");
+            }
+
             SessaoVotacao savedSessaoVotacao = sessaoVotacaoRepository.save(sessaoVotacao);
 
             // verificar se teve sucesso e logar informaçoes
