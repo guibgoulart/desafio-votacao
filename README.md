@@ -1,3 +1,5 @@
+![Badge de Build passando ou não](https://github.com/guibgoulart/desafio-votacao/actions/workflows/gradle.yml/badge.svg)
+
 # Projeto Cooperativa de Votação
 
 Este projeto é uma aplicação Spring Boot desenvolvida em Java 21, que utiliza Gradle para gerenciamento de dependências e Docker para a criação de um ambiente de execução consistente. O desenvolvimento foi guiado pela metodologia Test-Driven Development (TDD), com todos os testes unitários relevantes criados antes das funcionalidades e executados com sucesso. A aplicação permite gerenciar e participar de sessões de votação de uma cooperativa, onde cada associado possui um voto e as decisões são tomadas em assembleias.
